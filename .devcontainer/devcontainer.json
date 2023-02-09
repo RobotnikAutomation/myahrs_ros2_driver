@@ -12,7 +12,8 @@
         "ms-vscode.cpptools",
         "GitHub.copilot",
         "redhat.vscode-xml",
-        "twxs.cmake"
+        "twxs.cmake",
+        "ms-python.python"
       ]
     }
   }
