@@ -1,0 +1,19 @@
+{
+  "name": "Robotnik: Dev Container",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "robotnik",
+  "workspaceFolder": "/home/ros/robot_ws",
+  "remoteUser": "ros",
+  "postCreateCommand": "postcreate.sh",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "GitHub.copilot",
+        "redhat.vscode-xml",
+        "twxs.cmake"
+      ]
+    }
+  }
+}

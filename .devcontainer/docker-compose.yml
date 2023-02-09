@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  robotnik:
+    image: robotnik/robotnik-ros:builder-foxy-0.9.4-rc2
+    container_name: myahrs-ros2-driver
+    network_mode: host
+    volumes:
+    - type: bind
+      source: ./postcreate.sh
+      target: /usr/local/bin/postcreate.sh
+      read_only: true
+    - type: bind
+      source: ./c_cpp_properties.json
+      target: /home/ros/robot_ws/.vscode/c_cpp_properties.json
+    - type: bind
+      source: ./ros.repo.yml
+      target: /home/ros/repos/ros.repo.yml
+    - type: bind
+      source: ../
+      target: /home/ros/robot_ws/src/myahrs_ros2_driver
+    environment:
+      ROS_DOMAIN_ID: 30
+      CC: /usr/bin/gcc
+      CXX: /usr/bin/g++
+    command: sleep infinity
+      
