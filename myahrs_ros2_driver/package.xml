@@ -9,7 +9,7 @@
     ROS2 driver to control myAHRS+ IMU
   </description>
   <maintainer email="rmartin@robotnik.es">Rafael Martin</maintainer>
-  <license>Apache License 2.0</license>
+  <license>BSD</license>
 
   <author email="ros@clobot.co.kr">clobot-git</author>
 
