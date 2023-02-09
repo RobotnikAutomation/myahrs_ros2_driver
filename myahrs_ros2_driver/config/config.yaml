@@ -1,7 +1,10 @@
-myahrs_ros2_driver:
-  ros__parameters:
-    linear_acceleration_stddev: 0.026831
-    angular_velocity_stddev: 0.002428
-    magnetic_field_stddev: 0.00000327486
-    orientation_stddev: 0.002143
-  
+ros__parameters:
+  # Parametriced by launch file
+  frame_id: "imu_link"
+  port: "/dev/ttyUSB0"
+
+  # Fixed
+  linear_acceleration_stddev: 0.026831
+  angular_velocity_stddev: 0.002428
+  magnetic_field_stddev: 0.00000327486
+  orientation_stddev: 0.002143
