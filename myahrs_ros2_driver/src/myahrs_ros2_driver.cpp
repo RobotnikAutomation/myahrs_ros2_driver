@@ -26,32 +26,31 @@ MyAhrsDriverForROS::MyAhrsDriverForROS(std::string port, int baud_rate)
   frame_id_ = "imu_link";
   parent_frame_id_ = "base_link";
 
+  // declare parameters
+  this->declare_parameter("frame_id", "imu_link");
+  this->declare_parameter("parent_frame_id", "base_link");
   this->declare_parameter("linear_acceleration_stddev");
   this->declare_parameter("angular_velocity_stddev");
   this->declare_parameter("magnetic_field_stddev");
   this->declare_parameter("orientation_stddev");
 
-  this->get_parameter(
-    "linear_acceleration_stddev", linear_acceleration_stddev_);
+  // get parameters
+  this->get_parameter("frame_id", frame_id_);
+  this->get_parameter("parent_frame_id", parent_frame_id_);
+  this->get_parameter("linear_acceleration_stddev", linear_acceleration_stddev_);
   this->get_parameter("angular_velocity_stddev", angular_velocity_stddev_);
   this->get_parameter("magnetic_field_stddev", magnetic_field_stddev_);
   this->get_parameter("orientation_stddev", orientation_stddev_);
 
   // publisher for streaming
-  imu_data_raw_pub_ = this->create_publisher<sensor_msgs::msg::Imu>(
-    "imu/data_raw", rclcpp::QoS(1));
-  imu_data_pub_ =
-    this->create_publisher<sensor_msgs::msg::Imu>("imu/data", rclcpp::QoS(1));
-  imu_mag_pub_ = this->create_publisher<sensor_msgs::msg::MagneticField>(
-    "imu/mag", rclcpp::QoS(1));
-  imu_temperature_pub_ = this->create_publisher<std_msgs::msg::Float64>(
-    "imu/temperature", rclcpp::QoS(1));
+  imu_data_raw_pub_    = this->create_publisher<sensor_msgs::msg::Imu>("imu/data_raw", rclcpp::QoS(1));
+  imu_data_pub_        = this->create_publisher<sensor_msgs::msg::Imu>("imu/data", rclcpp::QoS(1));
+  imu_mag_pub_         = this->create_publisher<sensor_msgs::msg::MagneticField>("imu/mag", rclcpp::QoS(1));
+  imu_temperature_pub_ = this->create_publisher<std_msgs::msg::Float64>("imu/temperature", rclcpp::QoS(1));
 
   if (initialize() == false) {
-    RCLCPP_ERROR(
-      this->get_logger(),
-      "Initialize() returns false, please check your devices.");
-    exit(0);
+    RCLCPP_ERROR(this->get_logger(),"Initialize() returns false, please check your devices.");
+    exit(1);
   } else {
     RCLCPP_INFO(this->get_logger(), "Initialization OK!");
   }
