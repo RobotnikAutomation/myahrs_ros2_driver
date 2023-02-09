@@ -51,8 +51,8 @@ int main(int argc, char ** argv)
     std::cout << "arguments = ['/dev/ttyACM0','115200']" << std::endl;
     exit(1);
   }
-  std::string const port      { argv[1] };
-  int const         baud_rate { std::stoi(argv[2]) };
+  std::string const port      {argv[1]};
+  int const baud_rate {std::stoi(argv[2])};
 
   rclcpp::spin(std::make_shared<WithRobot::MyAhrsDriverForROS>(port, baud_rate));
   rclcpp::shutdown();

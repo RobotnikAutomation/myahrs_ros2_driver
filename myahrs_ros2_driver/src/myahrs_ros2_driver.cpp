@@ -61,13 +61,15 @@ MyAhrsDriverForROS::MyAhrsDriverForROS(std::string port, int baud_rate)
   this->get_parameter("orientation_stddev", orientation_stddev_);
 
   // publisher for streaming
-  imu_data_raw_pub_    = this->create_publisher<sensor_msgs::msg::Imu>("imu/data_raw", rclcpp::QoS(1));
-  imu_data_pub_        = this->create_publisher<sensor_msgs::msg::Imu>("imu/data", rclcpp::QoS(1));
-  imu_mag_pub_         = this->create_publisher<sensor_msgs::msg::MagneticField>("imu/mag", rclcpp::QoS(1));
-  imu_temperature_pub_ = this->create_publisher<std_msgs::msg::Float64>("imu/temperature", rclcpp::QoS(1));
+  imu_data_raw_pub_ = this->create_publisher<sensor_msgs::msg::Imu>("imu/data_raw", rclcpp::QoS(1));
+  imu_data_pub_ = this->create_publisher<sensor_msgs::msg::Imu>("imu/data", rclcpp::QoS(1));
+  imu_mag_pub_ = this->create_publisher<sensor_msgs::msg::MagneticField>("imu/mag", rclcpp::QoS(1));
+  imu_temperature_pub_ = this->create_publisher<std_msgs::msg::Float64>(
+    "imu/temperature", rclcpp::QoS(
+      1));
 
   if (initialize() == false) {
-    RCLCPP_ERROR(this->get_logger(),"Initialize() returns false, please check your devices.");
+    RCLCPP_ERROR(this->get_logger(), "Initialize() returns false, please check your devices.");
     exit(1);
   } else {
     RCLCPP_INFO(this->get_logger(), "Initialization OK!");
@@ -142,12 +144,12 @@ void MyAhrsDriverForROS::publish_topic(int sensor_id)
     imu_magnetic_msg.magnetic_field_covariance[8] = magnetic_field_cov;
 
   static double convertor_g2a =
-    9.80665; // for linear_acceleration (g to m/s^2)
+    9.80665;  // for linear_acceleration (g to m/s^2)
   static double convertor_d2r =
-    M_PI / 180.0; // for angular_velocity (degree to radian)
+    M_PI / 180.0;  // for angular_velocity (degree to radian)
   static double convertor_r2d =
     180.0 / M_PI;                       // for easy understanding (radian to degree)
-  static double convertor_ut2t = 1000000; // for magnetic_field (uT to Tesla)
+  static double convertor_ut2t = 1000000;  // for magnetic_field (uT to Tesla)
   static double convertor_c = 1.0;        // for temperature (celsius)
 
   double roll, pitch, yaw;
@@ -257,4 +259,4 @@ tf2::Quaternion MyAhrsDriverForROS::Euler2Quaternion(
   tf2::Quaternion q(qx, qy, qz, qw);
   return q;
 }
-} // namespace WithRobot
+}  // namespace WithRobot
