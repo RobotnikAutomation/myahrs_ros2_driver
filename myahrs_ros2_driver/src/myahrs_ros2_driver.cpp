@@ -47,10 +47,10 @@ MyAhrsDriverForROS::MyAhrsDriverForROS(std::string port, int baud_rate)
   // declare parameters
   this->declare_parameter("frame_id", "imu_link");
   this->declare_parameter("parent_frame_id", "base_link");
-  this->declare_parameter("linear_acceleration_stddev");
-  this->declare_parameter("angular_velocity_stddev");
-  this->declare_parameter("magnetic_field_stddev");
-  this->declare_parameter("orientation_stddev");
+  this->declare_parameter("linear_acceleration_stddev", linear_acceleration_stddev_);
+  this->declare_parameter("angular_velocity_stddev", angular_velocity_stddev_);
+  this->declare_parameter("magnetic_field_stddev", magnetic_field_stddev_);
+  this->declare_parameter("orientation_stddev", orientation_stddev_);
 
   // get parameters
   this->get_parameter("frame_id", frame_id_);
