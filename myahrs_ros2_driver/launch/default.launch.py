@@ -116,6 +116,8 @@ def generate_launch_description():
         source_file=config_file,
         param_rewrites={
             'frame_id': params['frame_id'],
+            'port': params['port'],
+            'baud_rate': '115200',
         },
         root_key=[params['namespace'], '/', params['node_name'],],
         convert_types=True
@@ -128,7 +130,6 @@ def generate_launch_description():
         executable='myahrs_ros2_driver',
         name=params['node_name'],
         output='screen',
-        arguments=[params['port'], '115200'],
         parameters=[config_file_rewritten]
     ))
 

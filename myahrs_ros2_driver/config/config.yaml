@@ -2,6 +2,7 @@ ros__parameters:
   # Parametriced by launch file
   frame_id: "imu_link"
   port: "/dev/ttyUSB0"
+  baud_rate: 115200
 
   # Fixed
   linear_acceleration_stddev: 0.026831

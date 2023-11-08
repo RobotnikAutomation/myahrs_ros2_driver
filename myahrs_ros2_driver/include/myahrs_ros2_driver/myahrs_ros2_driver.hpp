@@ -53,7 +53,7 @@ namespace WithRobot
 class MyAhrsDriverForROS : public rclcpp::Node, iMyAhrsPlus
 {
 public:
-  MyAhrsDriverForROS(std::string port, int baud_rate);
+  MyAhrsDriverForROS();
 
   ~MyAhrsDriverForROS();
 
@@ -84,6 +84,8 @@ private:
 
   Platform::Mutex lock_;
   SensorData sensor_data_;
+  std::string port;
+  int baud_rate;
   bool publish_tf_;
   std::string parent_frame_id_;
   std::string frame_id_;

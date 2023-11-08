@@ -36,8 +36,8 @@
 
 namespace WithRobot
 {
-MyAhrsDriverForROS::MyAhrsDriverForROS(std::string port, int baud_rate)
-: iMyAhrsPlus(port, baud_rate), Node("myahrs_ros2")
+MyAhrsDriverForROS::MyAhrsDriverForROS()
+: iMyAhrsPlus(), Node("myahrs_ros2")
 {
   // dependent on user device
   publish_tf_ = false;
@@ -45,6 +45,8 @@ MyAhrsDriverForROS::MyAhrsDriverForROS(std::string port, int baud_rate)
   parent_frame_id_ = "base_link";
 
   // declare parameters
+  this->declare_parameter("port", "/dev/ttyACM0");
+  this->declare_parameter("baud_rate", 115200);
   this->declare_parameter("frame_id", "imu_link");
   this->declare_parameter("parent_frame_id", "base_link");
   this->declare_parameter("linear_acceleration_stddev", linear_acceleration_stddev_);
@@ -53,12 +55,18 @@ MyAhrsDriverForROS::MyAhrsDriverForROS(std::string port, int baud_rate)
   this->declare_parameter("orientation_stddev", orientation_stddev_);
 
   // get parameters
+  this->get_parameter("port", port);
+  this->get_parameter("baud_rate", baud_rate);
   this->get_parameter("frame_id", frame_id_);
   this->get_parameter("parent_frame_id", parent_frame_id_);
   this->get_parameter("linear_acceleration_stddev", linear_acceleration_stddev_);
   this->get_parameter("angular_velocity_stddev", angular_velocity_stddev_);
   this->get_parameter("magnetic_field_stddev", magnetic_field_stddev_);
   this->get_parameter("orientation_stddev", orientation_stddev_);
+
+  RCLCPP_INFO(
+    this->get_logger(), "port: %s, baud_rate: %d, frame_id: %s, parent_frame_id: %s",
+    port.c_str(), baud_rate, frame_id_.c_str(), parent_frame_id_.c_str());
 
   // publisher for streaming
   imu_data_raw_pub_ = this->create_publisher<sensor_msgs::msg::Imu>("imu/data_raw", rclcpp::QoS(1));
@@ -83,7 +91,7 @@ bool MyAhrsDriverForROS::initialize()
   bool ok = false;
 
   do {
-    if (start() == false) {
+    if (start(port, baud_rate) == false) {
       break;
     }
     // Euler angle(x, y, z axis)
