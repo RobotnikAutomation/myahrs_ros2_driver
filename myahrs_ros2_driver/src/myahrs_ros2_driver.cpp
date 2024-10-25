@@ -70,7 +70,7 @@ MyAhrsDriverForROS::MyAhrsDriverForROS()
 
   // publisher for streaming
   imu_data_raw_pub_ = this->create_publisher<sensor_msgs::msg::Imu>("imu/data_raw", rclcpp::QoS(1));
-  imu_data_pub_ = this->create_publisher<sensor_msgs::msg::Imu>("imu/data", rclcpp::QoS(1));
+  imu_data_pub_ = this->create_publisher<sensor_msgs::msg::Imu>("imu/data_no_filter", rclcpp::QoS(1));
   imu_mag_pub_ = this->create_publisher<sensor_msgs::msg::MagneticField>("imu/mag", rclcpp::QoS(1));
   imu_temperature_pub_ = this->create_publisher<std_msgs::msg::Float64>(
     "imu/temperature", rclcpp::QoS(
