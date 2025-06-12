@@ -107,6 +107,8 @@ bool MyAhrsDriverForROS::initialize()
     if (cmd_mode("BC") == false) {
       break;
     }
+    timer_ = this->create_wall_timer(
+      std::chrono::milliseconds(1), std::bind(&MyAhrsDriverForROS::timer_callback, this));
     ok = true;
   } while (0);
 
@@ -115,11 +117,6 @@ bool MyAhrsDriverForROS::initialize()
 
 void MyAhrsDriverForROS::publish_topic(int sensor_id)
 {
-  auto imu_data_raw_msg = sensor_msgs::msg::Imu();
-  auto imu_data_msg = sensor_msgs::msg::Imu();
-  auto imu_magnetic_msg = sensor_msgs::msg::MagneticField();
-  auto imu_temperature_msg = std_msgs::msg::Float64();
-
   double linear_acceleration_cov =
     linear_acceleration_stddev_ * linear_acceleration_stddev_;
   double angular_velocity_cov =
@@ -216,11 +213,18 @@ void MyAhrsDriverForROS::publish_topic(int sensor_id)
   // original data used the celsius unit
   imu_temperature_msg.data = imu.temperature;
 
-  // publish the IMU data
-  imu_data_raw_pub_->publish(std::move(imu_data_raw_msg));
-  imu_data_pub_->publish(std::move(imu_data_msg));
-  imu_mag_pub_->publish(std::move(imu_magnetic_msg));
-  imu_temperature_pub_->publish(std::move(imu_temperature_msg));
+  // notify that data is ready
+  {
+    std::lock_guard<std::mutex> lock{ mutex_ };
+    imu_data_raw_msg.header.stamp = now;
+    imu_data_msg.header.stamp = now;
+    imu_magnetic_msg.header.stamp = now;
+    imu_temperature_msg.data = imu.temperature;
+
+    data_ready_ = true;
+    cv_.notify_all();
+  }
+  return;
 
   // publish tf
   if (publish_tf_) {

@@ -94,9 +94,32 @@ private:
   double magnetic_field_stddev_;
   double orientation_stddev_;
 
-  void OnSensorData(int sensor_id, SensorData data);
 
+  std::condition_variable cv_;
+  std::mutex mutex_;
+  bool data_ready_ = false;
+  sensor_msgs::msg::Imu imu_data_raw_msg;
+  sensor_msgs::msg::Imu imu_data_msg;
+  sensor_msgs::msg::MagneticField imu_magnetic_msg;
+  std_msgs::msg::Float64 imu_temperature_msg;
+
+  void OnSensorData(int sensor_id, SensorData data);
   void OnAttributeChange(int sensor_id, std::string attribute_name, std::string value);
+
+  // ROS2 callbacks
+  rclcpp::TimerBase::SharedPtr timer_;
+  void timer_callback()
+  {
+    {  // Wait for new data
+      std::unique_lock<std::mutex> lock(mutex_);
+      cv_.wait(lock, [this] { return data_ready_; });
+      data_ready_ = false;  // Reset the flag
+    }
+    imu_data_raw_pub_->publish(imu_data_raw_msg);
+    imu_data_pub_->publish(imu_data_msg);
+    imu_mag_pub_->publish(imu_magnetic_msg);
+    imu_temperature_pub_->publish(imu_temperature_msg);
+  }
 };
 }  // namespace WithRobot
 #endif  // MYAHRS_ROS2_DRIVER__MYAHRS_ROS2_DRIVER_HPP_
